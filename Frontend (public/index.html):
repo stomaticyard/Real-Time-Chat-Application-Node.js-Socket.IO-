@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sohbet Uygulaması</title>
+    <style>
+      /* Basit stil ayarları */
+      ul { list-style-type: none; padding: 0; }
+      li { padding: 8px; margin-bottom: 4px; background: #f2f2f2; }
+      input { padding: 10px; width: 80%; }
+      button { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Gerçek Zamanlı Sohbet</h1>
+    <ul id="messages"></ul>
+    <form id="chat-form">
+      <input id="message-input" autocomplete="off" placeholder="Mesajınızı yazın..." />
+      <button type="submit">Gönder</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Mesaj gönderme işlemi
+      document.getElementById('chat-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('message-input');
+        if (input.value.trim()) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }
+      });
+
+      // Gelen mesajları listeye ekleme
+      socket.on('chat message', (msg) => {
+        const messages = document.getElementById('messages');
+        const li = document.createElement('li');
+        li.textContent = msg;
+        messages.appendChild(li);
+      });
+    </script>
+</body>
+</html>
